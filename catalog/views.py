@@ -11,7 +11,3 @@ def contacts(request):
         return HttpResponse("Сообщение отправлено")
     else:
         return render(request, 'contacts.html')
-
-
-
-
