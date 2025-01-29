@@ -1,23 +1,19 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.views.generic import TemplateView, DetailView, ListView
 
 from catalog.models import Product
 
 
-def home(request):
-    products = Product.objects.all()
-    context = {'products': products}
-    return render(request, 'home.html', context)
+class ProductInfoDetailView(DetailView):
+    model = Product
+    template_name = 'product_info.html'
+    context_object_name = 'product'
 
 
-def contacts(request):
-    if request.method == 'POST':
-        return HttpResponse("Сообщение отправлено")
-    else:
-        return render(request, 'contacts.html')
+class HomeListView(ListView):
+    model = Product
+    template_name = 'home.html'
+    context_object_name = 'products'
 
 
-def product_info(request, pk):
-    product = Product.objects.get(id=pk)
-    context = {'product': product}
-    return render(request, 'product_info.html', context)
+class ContactsTemplateView(TemplateView):
+    template_name = 'contacts.html'
