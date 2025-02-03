@@ -1,37 +1,52 @@
+from django.shortcuts import reverse
+
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from blog.models import BlogEntry
 
 
+class BlogsListView(ListView):
+    model = BlogEntry
+    template_name = 'blogs.html'
+    context_object_name = 'blogentrance'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(publication_attribute=True)
+
+
+class BlogDetailView(DetailView):
+    model = BlogEntry
+    template_name = 'blog_detail.html'
+    context_object_name = 'blogentery'
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.quantity_views += 1
+        self.object.save()
+        return self.object
+
+
 class BlogCreateView(CreateView):
     model = BlogEntry
-    fields = ['header', 'content', 'preview']
-    template_name = 'blog_form.html'
-    success_url = reverse_lazy('home.html')
+    template_name = 'blog_create.html'
+    fields = ['header', 'content', 'preview', 'publication_attribute',]
+    success_url = reverse_lazy('blog:blogs')
+    context_object_name = 'blogentery'
 
 
 class BlogUpdateView(UpdateView):
     model = BlogEntry
+    template_name = 'blog_edit.html'
     fields = ['header', 'content', 'preview']
-    template_name = 'blog_form.html'
-    success_url = reverse_lazy('home.html')
+    success_url = reverse_lazy('blog:blogs')
 
-
-class BlogEntryDetailView(DetailView):
-    model = BlogEntry
-    template_name = 'blog_entry.html'
-    context_object_name = 'blogentry'
-
-
-class HomeListView(ListView):
-    model = BlogEntry
-    template_name = 'blog.html'
-    context_object_name = 'blogentries'
+    def get_success_url(self):
+        return reverse('blog:blog_detail', args=[self.kwargs.get('pk')])
 
 
 class BlogDeleteView(DeleteView):
     model = BlogEntry
-    template_name = 'blog_confirm.html'
-    success_url = reverse_lazy('home.html')
+    template_name = 'blog_delete.html'
+    success_url = '/blogs/'
