@@ -4,8 +4,9 @@
 {% block title %}Удаление{% endblock %}
 
 {% block content %}
-{% csrf_token %}
-{{ form.as_p }}
+{% if perms.catalog.can_delete_product or user == product.owner %}
+
+<p> Разрешение: can_delete_product - сработало</p>
 
     <div class="container mt-5">
         <h1 class="mb-4">Удалить товар</h1>
@@ -16,5 +17,12 @@
             <a href="javascript:history.back()" class="btn btn-secondary">Отмена</a>
         </form>
     </div>
+
+{% else %}
+<div class="card-body">
+    <p>Вы не имеете доступа для удаления продукта.</p>
+    <a class="btn btn-secondary" href="/home/" role="button">Назад</a>
+</div>
+{% endif %}
 
 {% endblock %}
