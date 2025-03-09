@@ -10,7 +10,7 @@ class EditingForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['name', 'description', 'image', 'price', 'category']
+        fields = ['name', 'description', 'image', 'price', 'category', 'publication_attribute']
         exclude = ['created_at', 'updated_at', ]
 
     def __init__(self, *args, **kwargs):
@@ -51,3 +51,9 @@ class EditingForm(forms.ModelForm):
         if price and price < 0:
             raise ValidationError('Цена не должна быть отрицательной')
         return price
+
+
+class ProductUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['publication_attribute', ]
