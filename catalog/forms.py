@@ -56,4 +56,4 @@ class EditingForm(forms.ModelForm):
 class ProductUpdateForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['publication_attribute', ]
+        fields = ['publication_attribute', 'is_published', ]

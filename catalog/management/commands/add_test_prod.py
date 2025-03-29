@@ -1,17 +1,14 @@
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
-from catalog.models import Product
+from catalog.models import Category, Product
 
 
 class Command(BaseCommand):
+    help = 'Add test data to the database'
 
     def handle(self, *args, **kwargs):
+        Category.objects.all().delete()
         Product.objects.all().delete()
-        products = [
-            {'name': 'Пылесос', 'price': 1000},
-            {'name': 'Утюг', 'price': 1000},
-        ]
 
-        for product_data in products:
-            product, created = Product.objects.get_or_create(**product_data)
-            self.stdout.write(self.style.SUCCESS(f'Продукт {product.name} успешно добавлен'))
+        call_command('loaddata', 'category_fixture.json')
+        call_command('loaddata', 'product_fixture.json')

@@ -74,7 +74,7 @@ class ProductUpdateView(UpdateView):
         user = self.request.user
         if user == self.object.owner or user.is_staff:
             return EditingForm
-        elif user.has_perm('catalog.can_unpublish_product'):
+        elif user.has_perm(['catalog.can_unpublish_product', 'product.can_unpublish_product']):
             return ProductUpdateForm
         raise PermissionDenied
 
@@ -86,7 +86,7 @@ class ProductUpdateView(UpdateView):
             return super().dispatch(request, *args, **kwargs)
 
         # Проверка разрешения can_unpublish_product
-        if request.user.has_perm('catalog.can_unpublish_product'):
+        if request.user.has_perm(['catalog.can_unpublish_product', 'product.can_unpublish_product']):
             return super().dispatch(request, *args, **kwargs)
         else:
             raise PermissionDenied("У вас нет прав для обновления этого продукта.")
